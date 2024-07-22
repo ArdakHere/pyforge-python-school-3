@@ -56,6 +56,7 @@ print("Benzene ring found in ethanol:", match)
 RDKit provides several options for visualizing molecules. You can visualize individual molecules or draw multiple molecules in a grid.
 
 ```python
+from rdkit import Chem
 from rdkit.Chem import Draw
 
 # Create a list of molecules
