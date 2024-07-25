@@ -133,6 +133,11 @@ def substructure_search(mol_substructure: str) -> list[str]:
 
 @app.post("/molecules/upload")
 async def upload_file(file: UploadFile = File(...)):
+    """
+        Find all molecules containing a substructure
+    \n**Args**:
+        \nfile (str): json file with list of dicts with molecules to be uploaded
+    """
     # Files to upload should be in the following format:
     # [
     #   {
