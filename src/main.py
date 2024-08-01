@@ -1,4 +1,5 @@
 import json
+from os import getenv
 
 from fastapi import FastAPI, status, HTTPException, UploadFile, File
 from rdkit import Chem
@@ -7,11 +8,9 @@ from models import Molecule
 
 app = FastAPI()
 
-
-@app.get("/")
+@app.get("/root")
 def read_root():
     return {"message": "It's HW5"}
-
 
 @app.post("/molecules", status_code=status.HTTP_201_CREATED, response_description="Molecule created", summary="Create molecule", tags=["molecules"])
 def add_molecule(molecule: Molecule) -> str:
@@ -197,6 +196,11 @@ def is_valid_smiles(mol_smiles: str) -> bool:
     # Using RDKit there to check if the SMILES string is valid
     mol = Chem.MolFromSmiles(mol_smiles)
     return mol is not None
+
+@app.get("/")
+def get_server():
+    return {"server_id": getenv("SERVER_ID", "1")}
+
 
 
 molecules_db = []
