@@ -2,12 +2,9 @@ import io
 import json
 
 import pytest
-import requests
 from fastapi.testclient import TestClient
-from main import app
+from main import app, molecules_db, unique_ids
 from models import Molecule
-from unittest.mock import Mock, patch
-from main import substructure_search, molecules_db, unique_ids
 
 client = TestClient(app)
 
@@ -17,15 +14,20 @@ file_paths = [
     "./tests/test_molecule_files/molecule_file_3.json"
 ]
 
+
 @pytest.fixture(scope="function", autouse=True)
 def setup_molecules_db():
     molecules_db.clear()
     unique_ids.clear()
     molecules_db.extend([
-        Molecule(id="0", name="benzene", smiles="c1ccccc1"),
-        Molecule(id="1", name="ethanol", smiles="CCO"),
-        Molecule(id="2", name="thirdanol", smiles="CC(=O)O"),
-        Molecule(id="3", name="fourthmoleculol", smiles="CC(=O)Oc1ccccc1C(=O)O")
+        Molecule(id="0", name="benzene",
+                 smiles="c1ccccc1"),
+        Molecule(id="1", name="ethanol",
+                 smiles="CCO"),
+        Molecule(id="2", name="thirdanol",
+                 smiles="CC(=O)O"),
+        Molecule(id="3", name="fourthmoleculol",
+                 smiles="CC(=O)Oc1ccccc1C(=O)O")
     ])
     unique_ids.add(0)
     unique_ids.add(1)
@@ -41,7 +43,9 @@ def setup_molecules_db():
 ])
 def test_substructure_search(molecule_data, expected_content):
     mol = "mol"
-    response = client.get(f"/molecules/{mol}/substructure_search?mol_substructure={molecule_data}")
+    response = client.get(f"/molecules/{mol}/"
+                          f"substructure_search?mol_substructure"
+                          f"={molecule_data}")
     assert expected_content in response.json()
     assert response.status_code == 200
 
@@ -54,7 +58,9 @@ def test_substructure_search(molecule_data, expected_content):
 def test_add_molecule(molecule_data):
     response = client.post("/molecules", json=molecule_data)
     assert response.status_code == 201
-    assert Molecule(id=molecule_data["id"], name=molecule_data["name"], smiles=molecule_data["smiles"]) in molecules_db
+    assert Molecule(id=molecule_data["id"],
+                    name=molecule_data["name"],
+                    smiles=molecule_data["smiles"]) in molecules_db
 
 
 @pytest.mark.parametrize("id", [
@@ -67,7 +73,8 @@ def test_get_molecule(id):
     response = client.get(f"/molecules/{id}?id_to_get={id}")
     assert response.status_code == 200
     print(response.json())
-    assert response.json() == {"id": id, "name": molecules_db[id].name, "smiles": molecules_db[id].smiles}
+    assert response.json() == {"id": id, "name": molecules_db[id].name,
+                               "smiles": molecules_db[id].smiles}
 
 
 @pytest.mark.parametrize("id_to_update, molecule_data", [
@@ -76,9 +83,12 @@ def test_get_molecule(id):
     (3, {"id": 3, "name": "lololololol", "smiles": "CCO"}),
 ])
 def test_update_molecule(id_to_update, molecule_data):
-    response = client.put(f"/molecules/{id_to_update}?id_to_update={id_to_update}", json=molecule_data)
+    response = client.put(f"/molecules/{id_to_update}?"
+                          f"id_to_update={id_to_update}",
+                          json=molecule_data)
     assert response.status_code == 200
-    assert Molecule(id=molecule_data["id"], name=molecule_data["name"], smiles=molecule_data["smiles"]) in molecules_db
+    assert Molecule(id=molecule_data["id"], name=molecule_data["name"],
+                    smiles=molecule_data["smiles"]) in molecules_db
 
 
 @pytest.mark.parametrize("id_to_delete", [
@@ -106,7 +116,9 @@ def test_upload_file(file_path):
     print(file_data)
     response = client.post(
         "/molecules/upload",
-        files={"file": ("molecule_file_1.json", io.BytesIO(file_data.encode('utf-8')), "application/json")}
+        files={"file": ("molecule_file_1.json",
+                        io.BytesIO(file_data.encode('utf-8')),
+                        "application/json")}
     )
     print(molecules_db)
     file_data = json.loads(file_data)
@@ -115,4 +127,3 @@ def test_upload_file(file_path):
     for item in file_data:
         item = Molecule(**item)
         assert item in molecules_db
-

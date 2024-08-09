@@ -8,11 +8,18 @@ from models import Molecule
 
 app = FastAPI()
 
+
 @app.get("/root")
 def read_root():
     return {"message": "It's HW5"}
 
-@app.post("/molecules", status_code=status.HTTP_201_CREATED, response_description="Molecule created", summary="Create molecule", tags=["molecules"])
+
+@app.post("/molecules",
+          status_code=status.HTTP_201_CREATED,
+          response_description="Molecule created",
+          summary="Create molecule",
+          tags=["molecules"]
+          )
 def add_molecule(molecule: Molecule) -> str:
     """
         Add a molecule to the list of molecules \n
@@ -20,18 +27,24 @@ def add_molecule(molecule: Molecule) -> str:
         \n molecule (Molecule): dict of a molecule to be added \n
     **Returns**:
         \n str: "Molecule added successfully" or
-        \n "The molecule you are trying to add already exists in the database."
+        \n "The molecule you are trying to add already
+        exists in the database."
         or "Can't duplicate ids!" or "Invalid SMILES, try again"
     """
     if not is_valid_smiles(molecule.smiles):
-        raise HTTPException(status_code=400, detail="Invalid SMILES, try again")
+        raise HTTPException(status_code=400,
+                            detail="Invalid SMILES, try again")
 
     if molecules_db.__len__() != 0:
         for item in molecules_db:
             if molecule.id in unique_ids:
-                raise HTTPException(status_code=400, detail="Can't duplicate ids!")
+                raise HTTPException(status_code=400,
+                                    detail="Can't duplicate ids!")
             if item == molecule:
-                raise HTTPException(status_code=400, detail="The molecule you are trying to add already exists in the database.")
+                raise HTTPException(status_code=400,
+                                    detail="The molecule you are trying "
+                                           "to add already exists"
+                                           " in the database.")
 
         molecules_db.append(molecule)
         unique_ids.add(molecule.id)
@@ -70,14 +83,16 @@ def update_molecule(id_to_update: int, updated_molecule: Molecule) -> str:
         \n str: "Molecule updated successfully" or
         "Can't change the id of the molecule" or
         \n "Invalid SMILES string, try again" or
-        "The molecule you are trying to change already exists in the database."
+        "The molecule you are trying to change already exists
+        in the database."
     """
     if id_to_update != updated_molecule.id:
         return "Can't change the id of the molecule"
     if not is_valid_smiles(updated_molecule.smiles):
         return "Invalid SMILES string, try again"
     if updated_molecule in molecules_db:
-        return "The molecule you are trying to change already exists in the database."
+        return ("The molecule you are trying to change "
+                "already exists in the database.")
 
     for index, molecule in enumerate(molecules_db):
         if molecule.id == id_to_update:
@@ -94,14 +109,18 @@ def delete_molecule(id_to_delete: int) -> str:
     \n**Args**:
         \nid (int): id of the molecule
     \n**Returns**:
-        \nstr: "Molecule deleted successfully" or "No molecule was deleted, as no id matches"
+        \nstr: "Molecule deleted successfully" or "No molecule
+        was deleted, as
+        no id matches"
     """
     for item in molecules_db:
         if item.id == id_to_delete:
             molecules_db.remove(item)
             return "Molecule deleted successfully"
 
-    raise HTTPException(status_code=404, detail="No molecule was deleted, as no id matches")
+    raise HTTPException(status_code=404, detail="No molecule "
+                                                "was deleted, as no "
+                                                "id matches")
 
 
 @app.get("/molecules", tags=["molecules"])
@@ -121,7 +140,8 @@ def substructure_search(mol_substructure: str) -> list[str]:
     \n**Args**:
         \nmol_substructure (str): Substructure as SMILES string
     \n**Returns**:
-        \nlist[str]: a list of all molecules from molecules_db that contain mol_substructure
+        \nlist[str]: a list of all molecules
+        from molecules_db that contain mol_substructure
     """
 
     substructures_searched = []
@@ -130,7 +150,8 @@ def substructure_search(mol_substructure: str) -> list[str]:
         if mol_substructure in item.smiles:
             substructures_searched.append(item.smiles)
 
-    assert len(substructures_searched) > 0, "No molecules found containing the substructure."
+    assert len(substructures_searched) > 0, ("No molecules found "
+                                             "containing the substructure.")
 
     return substructures_searched
 
@@ -170,7 +191,10 @@ async def upload_file(file: UploadFile = File(...)):
         try:
             molecule = Molecule(**item)
         except Exception as e:
-            return JSONResponse(status_code=400, content={"error": f"Invalid molecule data: {item}, error: {str(e)}"})
+            return JSONResponse(status_code=400,
+                                content={"error":
+                                             f"Invalid molecule data: {item},"
+                                             f" error: {str(e)}"})
         if molecule in molecules_db:
             not_added_molecules.append(molecule)
             continue
@@ -185,11 +209,18 @@ async def upload_file(file: UploadFile = File(...)):
             molecules_db.append(molecule)
 
     if not_added_molecules.__len__() == 0 and smiles_incorrect.__len__() != 0:
-        raise HTTPException(status_code=400, detail=f"SMILES is not correct for these: {smiles_incorrect}")
+        raise HTTPException(status_code=400,
+                            detail=f"SMILES is "
+                                   f"not correct for these: "
+                                   f"{smiles_incorrect}")
     if not_added_molecules.__len__() != 0 and smiles_incorrect.__len__() == 0:
-        raise HTTPException(status_code=400, detail=f"These already exist: {not_added_molecules}")
+        raise HTTPException(status_code=400,
+                            detail=f"These already "
+                                   f"exist: {not_added_molecules}")
     if not_added_molecules.__len__() == 0 and smiles_incorrect.__len__() == 0:
-        return JSONResponse(status_code=201, content={"message": "Molecules added successfully"})
+        return JSONResponse(status_code=201,
+                            content={"message": "Molecules "
+                                                "added successfully"})
 
 
 def is_valid_smiles(mol_smiles: str) -> bool:
@@ -197,10 +228,10 @@ def is_valid_smiles(mol_smiles: str) -> bool:
     mol = Chem.MolFromSmiles(mol_smiles)
     return mol is not None
 
+
 @app.get("/")
 def get_server():
     return {"server_id": getenv("SERVER_ID", "1")}
-
 
 
 molecules_db = []
