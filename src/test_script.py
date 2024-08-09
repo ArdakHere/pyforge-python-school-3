@@ -99,6 +99,7 @@ def test_update_molecule(id_to_update, molecule_data):
 ])
 def test_delete_molecule(id_to_delete):
     response = client.delete(f"/molecules/{id}?id_to_delete={id_to_delete}")
+    assert response.status_code == 200
     assert id_to_delete not in molecules_db
 
 
