@@ -30,4 +30,5 @@ jobs:
       run: flake8 .
 
     - name: Run tests
-      run: pytest src/test_script.py
+      run: cd src
+           pytest test_script.py
