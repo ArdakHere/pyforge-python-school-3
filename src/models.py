@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
 class Molecule(BaseModel):
-    identifier: int
+    id: int
     name: str
     smiles: str
