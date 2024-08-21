@@ -1,0 +1,28 @@
+services:
+  web1:
+    build: ./
+    volumes:
+      - /pyforge-python-school-3/src  # Maps the src directory to the working directory in the container
+    ports:
+        - "8001:8000"
+    environment:
+      SERVER_ID: SERVER-1
+
+  web2:
+    build: ./
+    volumes:
+      - /pyforge-python-school-3/src # Maps the src directory to the working directory in the container
+    ports:
+      - "8002:8000"
+    environment:
+      SERVER_ID: SERVER-2
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "8000:80"
+    volumes:
+      - /pyforge-python-school-3/nginx/default.conf
+    depends_on:
+      - web1
+      - web2
