@@ -13,7 +13,7 @@ app = FastAPI()
 
 @app.get("/root")
 def read_root():
-    return {"message": "It's HW5"}
+    return {"message": "This is the greatest root of all time! I'd say it's the Groot"}
 
 
 app.include_router(router)

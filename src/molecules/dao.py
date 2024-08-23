@@ -111,14 +111,9 @@ class MoleculeDAO(BaseDAO):
                 await session.commit()
                 return molecule_id
 
+    # TODO: Implement this method
     async def process_molecule_upload(file_contents: bytes):
-        """
-        Process a JSON file with molecules and return validation results.
-        \n**Args**:
-        \nfile_contents (bytes): Contents of the uploaded JSON file.
-        \n**Returns**:
-        \nDict[str, List[Dict]]: Results of the upload process including lists of added, not added, and incorrect molecules.
-        """
+
         data = json.loads(file_contents.decode("utf-8"))
         not_added_molecules = []
         smiles_incorrect = []
