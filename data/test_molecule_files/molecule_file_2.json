@@ -1,9 +1,12 @@
 
 [
 	{
-		"id": 8,
-		"name": "bethatethaethanol",
-        "smiles": "CCO"
+		"name": "mol_2",
+        "smiles": "CC(=O)Oc1ccccc1C(=O)O"
+	},
+	{
+		"name": "mol_1",
+		"smiles": "CC(=O)O"
 	}
 ]
 

@@ -9,6 +9,7 @@ from sqlalchemy.exc import IntegrityError
 from src.molecules.dao import MoleculeDAO
 from src.molecules.request_body import RBMolecule
 from src.molecules.schema import MoleculeResponse, MoleculeAdd, MoleculeUpdate
+from src.services.molecule_service import process_molecule_upload
 
 router = APIRouter(prefix="/molecules", tags=["molecules"])
 

@@ -11,7 +11,7 @@ from src.molecules.router import router
 app = FastAPI()
 
 
-@app.get("/root")
+@app.get("/")
 def read_root():
     return {"message": "This is the greatest root of all time! I'd say it's the Groot"}
 
