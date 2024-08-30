@@ -1,0 +1,12 @@
+
+[
+	{
+		"name": "propane",
+        "smiles": "CCC"
+	},
+	{
+		"name": "hexane",
+		"smiles": "CCCCCC"
+	}
+]
+
