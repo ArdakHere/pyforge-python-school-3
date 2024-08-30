@@ -1,5 +1,6 @@
 import json
 import logging
+from typing import AsyncIterator
 
 from rdkit import Chem
 from sqlalchemy import delete
@@ -8,24 +9,36 @@ from sqlalchemy.future import select
 from src.molecules.models import Molecule
 from src.database import async_session_maker
 from src.dao.base import BaseDAO
-from src.molecules.schema import MoleculeAdd
-
+from src.molecules.schema import MoleculeAdd, MoleculeResponse
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
+class MoleculeIterator:
+    def __init__(self, limit: int):
+        self.limit = limit
+        self._current = 0
+
+    async def __aiter__(self) -> AsyncIterator[MoleculeResponse]:
+        async with async_session_maker() as session:
+            query = select(MoleculeDAO.model).limit(self.limit)
+            result = await session.execute(query)
+            molecules = result.scalars().all()
+            for molecule in molecules:
+                self._current += 1
+                yield molecule
 
 
 class MoleculeDAO(BaseDAO):
     model = Molecule
 
     @classmethod
-    async def find_all_molecules(cls):
-        logging.info("Finding all molecules")
-
+    async def find_all_molecules(cls, limit: int):
         async with async_session_maker() as session:
-            query = select(cls.model)
-            molecules = await session.execute(query)
-            logging.info("Returning all molecules")
-            return molecules.scalars().all()
+            list_molecules = []
+            async for item in MoleculeIterator(limit):
+                list_molecules.append(item)
+            return list_molecules
 
     @classmethod
     async def find_by_name(cls, name: str):
@@ -114,18 +127,15 @@ class MoleculeDAO(BaseDAO):
                 return molecule
 
     @classmethod
-    async def search_by_substructure(cls, substructure: str, limit: int):
+    async def search_by_substructure(cls, substructure: str):
         logging.info("Searching for molecules by substructure")
         async with async_session_maker() as session:
             logging.info("Querying the database")
-            query = select(cls.model).filter(cls.model.smiles.contains(substructure)).limit(limit)
+            query = select(cls.model).filter(cls.model.smiles.contains(substructure))
             result = await session.execute(query)
+            molecules = result.scalars().all()
             logging.info("Returning molecules by substructure")
-            # Using an iterator to yield molecules in chunks
-            molecules = result.scalars().all()  # Retrieve all results at once
-
-            for molecule in molecules:
-                yield molecule
+            return molecules
 
     @classmethod
     async def delete_molecule_by_id(cls, molecule_id: int):

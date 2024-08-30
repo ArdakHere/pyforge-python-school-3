@@ -7,7 +7,7 @@ from fastapi.responses import JSONResponse
 from rdkit import Chem
 from sqlalchemy.exc import IntegrityError
 
-from src.molecules.dao import MoleculeDAO
+from src.molecules.dao import MoleculeDAO, MoleculeIterator
 from src.molecules.request_body import RBMolecule
 from src.molecules.schema import MoleculeResponse, MoleculeAdd, MoleculeUpdate
 
@@ -26,9 +26,8 @@ async def get_all_molecules(
         \nlist [Molecule]: List of all molecules
     """
 
-    logging.info("Calling DAO to get all molecules")
-    return await MoleculeDAO.find_all_molecules()
-
+    result = await MoleculeDAO.find_all_molecules(request_body.limit)
+    return result
 
 @router.get("/{molecule_id}", summary="Get a molecule with an id")
 async def get_molecule_by_id(molecule_id: int) -> MoleculeResponse | dict:
@@ -104,7 +103,7 @@ async def update_molecule(molecule_id: int, molecule_data: MoleculeUpdate):
 
 
 @router.get("/molecules/substructure_search", tags=["molecules"])
-async def substructure_search(mol_substructure: str, limit: int) -> list[str]:
+async def substructure_search(mol_substructure: str) -> list[str]:
     """
         Find all molecules containing a substructure.
     \n**Args**:
@@ -112,22 +111,23 @@ async def substructure_search(mol_substructure: str, limit: int) -> list[str]:
     \n**Returns**:
         \nlist[str]: A list of all molecule SMILES that contain the substructure.
     """
-
-    # Perform the substructure search using the DAO method
     substructures_found = []
 
     logging.info("Calling DAO iterator to search for molecules by substructure")
-    async for molecule in MoleculeDAO.search_by_substructure(mol_substructure, limit):
-        substructures_found.append(molecule.smiles)
+    molecules = await MoleculeDAO.search_by_substructure(mol_substructure)
 
     logging.info("Checking if any molecules were found")
     # Check if any molecules were found
-    if not substructures_found:
+    if not molecules:
         logging.error("No molecules found containing the substructure")
         raise HTTPException(status_code=404, detail="No molecules found containing the substructure.")
 
+    logging.info("Populating substructures_found")
     # Extract the SMILES strings from the molecule objects
-    logging.info("Returning the list of SMILES strings")
+    for molecule in molecules:
+        substructures_found.append(molecule.smiles)
+
+    logging.info("Returning substructures_found")
     return substructures_found
 
 
