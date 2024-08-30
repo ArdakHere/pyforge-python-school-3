@@ -25,7 +25,7 @@ async def get_all_molecules(
     \n**Returns**:
         \nlist [Molecule]: List of all molecules
     """
-
+    logging.info("Calling DAO to get all molecules")
     result = await MoleculeDAO.find_all_molecules(request_body.limit)
     return result
 

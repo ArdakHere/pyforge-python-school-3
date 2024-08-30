@@ -34,10 +34,13 @@ class MoleculeDAO(BaseDAO):
 
     @classmethod
     async def find_all_molecules(cls, limit: int):
+        logging.info("Finding all molecules")
         async with async_session_maker() as session:
             list_molecules = []
+            logging.info("Iterating over molecules")
             async for item in MoleculeIterator(limit):
                 list_molecules.append(item)
+            logging.info("Returning all molecules")
             return list_molecules
 
     @classmethod
