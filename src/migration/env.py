@@ -1,4 +1,5 @@
 import asyncio
+import os
 from logging.config import fileConfig
 
 from sqlalchemy import pool
@@ -17,6 +18,7 @@ from src.database import DATABASE_URL
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
 config = context.config
+DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://admin:password@postgres:5432/molecule_db")
 config.set_main_option("sqlalchemy.url", DATABASE_URL)
 
 # Interpret the config file for Python logging.

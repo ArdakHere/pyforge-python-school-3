@@ -2,6 +2,7 @@ import json
 import logging
 from os import getenv
 
+import redis
 from fastapi import FastAPI, status, HTTPException, UploadFile, File
 from rdkit import Chem
 from fastapi.responses import JSONResponse
