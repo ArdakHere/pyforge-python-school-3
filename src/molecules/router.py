@@ -14,7 +14,6 @@ from src.molecules.schema import MoleculeResponse, MoleculeAdd, MoleculeUpdate
 
 router = APIRouter(prefix="/molecules", tags=["molecules"])
 
-
 @router.get("/list_molecules", summary="Get all molecules")
 async def get_all_molecules(
     request_body: RBMolecule = Depends(),
