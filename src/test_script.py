@@ -4,7 +4,7 @@ import json
 import pytest
 from fastapi.testclient import TestClient
 from main import app, molecules_db, unique_ids
-from models import Molecule
+from src.molecules.models import Molecule
 
 client = TestClient(app)
 
