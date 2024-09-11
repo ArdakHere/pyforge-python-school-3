@@ -9,7 +9,7 @@ from fastapi.responses import JSONResponse
 from rdkit import Chem
 from sqlalchemy.exc import IntegrityError
 
-from src import tasks
+from src.tasks import task_substructure_search
 from src.celery_worker import celery
 from src.molecules.dao import MoleculeDAO, MoleculeIterator
 from src.molecules.request_body import RBMolecule
@@ -20,7 +20,8 @@ router = APIRouter(prefix="/molecules", tags=["molecules"])
 
 @router.post("/tasks/add")
 async def create_substructure_task(mol_substructure: str):
-    task = tasks.substructure_search.delay(mol_substructure)
+    task = task_substructure_search.delay(mol_substructure)
+
     return {"task_id": task.id, "status": task.status}
 
 
@@ -32,7 +33,7 @@ async def get_task_result(task_id: str):
     elif task_result.state == 'SUCCESS':
         return {"task_id": task_id, "status": "Task completed", "result": task_result.result}
     else:
-        return {"task_id": task_id, "status": task_result.state}
+        return {"task_id": task_id, "status": task_result.state, "result": task_result.result}
 
 
 @router.get("/list_molecules", summary="Get all molecules")
