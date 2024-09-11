@@ -2,17 +2,37 @@ import json
 import logging
 
 import redis
+from celery.result import AsyncResult
 from fastapi import APIRouter, Depends, HTTPException, status, UploadFile, File
 from fastapi.responses import JSONResponse
 
 from rdkit import Chem
 from sqlalchemy.exc import IntegrityError
 
+from src import tasks
+from src.celery_worker import celery
 from src.molecules.dao import MoleculeDAO, MoleculeIterator
 from src.molecules.request_body import RBMolecule
 from src.molecules.schema import MoleculeResponse, MoleculeAdd, MoleculeUpdate
 
 router = APIRouter(prefix="/molecules", tags=["molecules"])
+
+
+@router.post("/tasks/add")
+async def create_substructure_task(mol_substructure: str):
+    task = tasks.substructure_search.delay(mol_substructure)
+    return {"task_id": task.id, "status": task.status}
+
+
+@router.get("/tasks/{task_id}")
+async def get_task_result(task_id: str):
+    task_result = AsyncResult(task_id, app=celery)
+    if task_result.state == 'PENDING':
+        return {"task_id": task_id, "status": "Task is still processing"}
+    elif task_result.state == 'SUCCESS':
+        return {"task_id": task_id, "status": "Task completed", "result": task_result.result}
+    else:
+        return {"task_id": task_id, "status": task_result.state}
 
 
 @router.get("/list_molecules", summary="Get all molecules")
@@ -117,9 +137,7 @@ async def substructure_search(mol_substructure: str) -> list[str]:
 
     logging.info("Calling DAO iterator to search for molecules by substructure")
     molecules = await MoleculeDAO.search_by_substructure(mol_substructure)
-    print(molecules)
     if 'data' in molecules:
-        print("YAS")
         molecules_new = molecules.get('data', {}).get('molecules', [])
 
         # Get the list of SMILES strings

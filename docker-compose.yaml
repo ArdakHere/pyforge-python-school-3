@@ -28,6 +28,16 @@ services:
       - postgres
       - redis
 
+  celery_worker:
+    build:
+        context: .
+        dockerfile: src/Dockerfile
+    entrypoint: "celery -A src.celery_worker worker --loglevel=info"
+    depends_on:
+      - redis
+    volumes:
+      - .:/app
+
   redis:
     image: "redis:alpine"
     ports:

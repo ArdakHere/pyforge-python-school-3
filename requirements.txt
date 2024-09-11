@@ -59,4 +59,6 @@ psycopg2==2.9.9
 psycopg2-binary==2.9.9
 asyncpg==0.29.0
 alembic~=1.13.2
-redis==5.0.8
+redis==5.0.8  
+celery==5.3.6
+importlib_metadata==4.13.0
