@@ -21,13 +21,14 @@ router = APIRouter(prefix="/molecules", tags=["molecules"])
 @router.post("/tasks/add")
 async def create_substructure_task(mol_substructure: str):
     task = task_substructure_search.delay(mol_substructure)
-
+    logging.info("Task created")
     return {"task_id": task.id, "status": task.status}
 
 
 @router.get("/tasks/{task_id}")
 async def get_task_result(task_id: str):
     task_result = AsyncResult(task_id, app=celery)
+    logging.info("Checking task status")
     if task_result.state == 'PENDING':
         return {"task_id": task_id, "status": "Task is still processing"}
     elif task_result.state == 'SUCCESS':
