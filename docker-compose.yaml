@@ -36,6 +36,9 @@ services:
     tty: true
     stdin_open: true
 
+
+
+
 volumes:
   pgdata:
     driver: local

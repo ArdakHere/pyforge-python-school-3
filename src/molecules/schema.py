@@ -1,3 +1,4 @@
+import logging
 import re
 from pydantic import BaseModel, Field, field_validator
 from rdkit import Chem
@@ -13,7 +14,9 @@ class MoleculeResponse(BaseModel):
 
     @field_validator("smiles")
     def validate_smiles(cls, value):
+        logging.info("Validating SMILES")
         if Chem.MolFromSmiles(value) is None:
+            logging.error(f"This {value} SMILES has an invalid structure")
             raise ValueError("This SMILES has an invalid structure")
         return value
 
@@ -24,7 +27,9 @@ class MoleculeUpdate(BaseModel):
 
     @field_validator("smiles")
     def validate_smiles(cls, value):
+        logging.info("Validating SMILES")
         if value and Chem.MolFromSmiles(value) is None:
+            logging.error(f"This {value} SMILES has an invalid structure")
             raise ValueError("This SMILES has an invalid structure")
         return value
 
@@ -37,6 +42,8 @@ class MoleculeAdd(BaseModel):
 
     @field_validator("smiles")
     def validate_smiles(cls, value):
+        logging.info("Validating SMILES")
         if Chem.MolFromSmiles(value) is None:
+            logging.error(f"This {value} SMILES has an invalid structure")
             raise ValueError("This SMILES has an invalid structure")
         return value
