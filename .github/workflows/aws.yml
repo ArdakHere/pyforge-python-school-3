@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main  # Trigger the workflow when changes are pushed to the main branch
+      - aws_hw11  # Trigger the workflow when changes are pushed to the main branch
 
 jobs:
   deploy:
