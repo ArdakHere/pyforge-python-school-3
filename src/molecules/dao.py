@@ -2,6 +2,7 @@ import json
 import logging
 from typing import AsyncIterator
 
+import redis
 from rdkit import Chem
 from sqlalchemy import delete
 from sqlalchemy.exc import IntegrityError
@@ -12,6 +13,25 @@ from src.dao.base import BaseDAO
 from src.molecules.schema import MoleculeAdd, MoleculeResponse
 
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+
+redis_client = redis.Redis(host='redis', port=6379, db=0)
+
+
+def get_cached_result(key: str):
+    result = redis_client.get(key)
+    if result:
+        logging.info(f"Cache hit for key: {key}")
+        result = result.decode('utf-8')
+
+        return json.loads(result)
+    logging.info(f"Cache miss for key: {key}")
+    return None
+
+
+def set_cache(key: str, value: dict, expiration: int = 60):
+    redis_client.setex(key, expiration, json.dumps(value))
+    logging.info(f"Cache set for key: {key} and value: {value} with expiration {expiration} seconds")
 
 
 class MoleculeIterator:
@@ -34,9 +54,11 @@ class MoleculeDAO(BaseDAO):
 
     @classmethod
     async def find_all_molecules(cls, limit: int):
+
         logging.info("Finding all molecules")
         async with async_session_maker() as session:
             list_molecules = []
+            print(session)
             logging.info("Iterating over molecules")
             async for item in MoleculeIterator(limit):
                 list_molecules.append(item)
@@ -57,18 +79,36 @@ class MoleculeDAO(BaseDAO):
     async def find_full_data(cls, molecule_id):
         logging.info("Finding full data of a molecule")
         async with async_session_maker() as session:
-            # Query to get molecule info
             logging.info("Querying the database")
             query = select(cls.model).filter_by(id=molecule_id)
+
+            cache_key = f"get molecule by id:{molecule_id}"
+            cached_result = get_cached_result(cache_key)
+
+            if cached_result:
+                logging.info("Returning cached result of 'get molecule by id search'")
+                return {"source": "cache", "data": cached_result}
+
             result = await session.execute(query)
             molecule_info = result.scalar_one_or_none()
 
-            # If molecule is not found, return None
+            if molecule_info:
+                molecule_data = {
+                    "id": molecule_info.id,
+                    "name": molecule_info.name,
+                    "smiles": molecule_info.smiles
+                }
+            else:
+                molecule_data = None
+
+            logging.info("Setting cache for 'get molecule by id'")
+            set_cache(cache_key, molecule_data)
+
+            logging.info("Checking if molecule is found")
             if not molecule_info:
                 logging.error("Molecule data not found")
                 return None
 
-            molecule_data = molecule_info
             logging.info("Returning full data of a molecule")
             return molecule_data
 
@@ -116,7 +156,6 @@ class MoleculeDAO(BaseDAO):
                     logging.error("Molecule not found")
                     raise ValueError(f"Molecule with id '{molecule_id}' not found.")
 
-                # Update fields if they are provided in update_data
                 if "name" in update_data:
                     logging.info("Updating molecule name")
                     molecule.name = update_data["name"]
@@ -135,10 +174,40 @@ class MoleculeDAO(BaseDAO):
         async with async_session_maker() as session:
             logging.info("Querying the database")
             query = select(cls.model).filter(cls.model.smiles.contains(substructure))
+
+            cache_key = f"search by substructure:{substructure}"
+            cached_result = get_cached_result(cache_key)
+
+            if cached_result:
+                logging.info("Returning cached result of substructure search")
+                return {"source": "cache", "data": cached_result}
+
             result = await session.execute(query)
             molecules = result.scalars().all()
+
+            molecules_list = [
+                {
+                    "id": molecule.id,
+                    "name": molecule.name,
+                    "smiles": molecule.smiles,
+                }
+                for molecule in molecules
+            ]
+
+            cache_data = {
+                "molecules": molecules_list
+            }
+
+            logging.info("Setting cache for 'substructure search'")
+            set_cache(cache_key, cache_data)
+
+            logging.info("Checking if molecules are found")
+            if not cache_data:
+                logging.error("Substructure not found")
+                return None
+
             logging.info("Returning molecules by substructure")
-            return molecules
+            return cache_data
 
     @classmethod
     async def delete_molecule_by_id(cls, molecule_id: int):
