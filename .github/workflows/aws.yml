@@ -31,6 +31,8 @@ jobs:
         key: ${{ secrets.SSH_KEY }}             # Your private SSH key stored in GitHub Secrets
         port: 22
         script: |
+          
+          cd quantori_project/pyforge-python-school-3
           if [ ! -d ".git" ]; then
             git clone https://github.com/ArdakHere/pyforge-python-school-3/ .
           fi
