@@ -20,7 +20,7 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
 
-    - name: Install SSH Client
+    - name: Install - SSH Client
       run: sudo apt-get install -y openssh-client
 
     - name: SSH into EC2 and deploy
