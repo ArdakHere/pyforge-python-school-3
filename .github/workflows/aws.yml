@@ -42,18 +42,15 @@ jobs:
           git checkout aws_hw11
           git pull origin aws_hw11
 
-          if ! command -v docker &> /dev/null; then
-              echo "Docker is not installed. Installing..."
-              sudo apt-get update
-              sudo apt-get install -y docker.io
-              sudo systemctl start docker
-              sudo systemctl enable docker
-          fi
-
-          if ! command -v docker-compose &> /dev/null; then
-              echo "Docker Compose is not installed. Installing..."
-              sudo apt-get install -y docker-compose
-          fi
+          echo "Docker is not installed. Installing..."
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+          
+          
+          echo "Docker Compose is not installed. Installing..."
+          sudo apt-get install -y docker-compose
 
           cd /quantori_project/pyforge-python-school-3/
           docker-compose up -d
