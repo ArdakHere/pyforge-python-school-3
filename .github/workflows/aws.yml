@@ -45,7 +45,7 @@ jobs:
           if ! command -v docker &> /dev/null; then
             echo "Docker is not installed. Installing..."
             sudo apt-get update
-            sudo apt-get install -y docker.io
+            sudo apt-get install -y docker
             sudo systemctl start docker
             sudo systemctl enable docker
           fi
@@ -62,5 +62,6 @@ jobs:
           # Start Docker and deploy
           sudo systemctl restart docker
           sudo systemctl start docker
-          docker-compose up --build -d
+          sudo docker compose up
+          docker compose up --build -d
 
