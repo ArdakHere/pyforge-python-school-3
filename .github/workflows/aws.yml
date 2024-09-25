@@ -60,5 +60,5 @@ jobs:
 
           # Start Docker and deploy
           sudo docker-compose up
-          docker-compose up --build -d
+          docker compose up -d
 
