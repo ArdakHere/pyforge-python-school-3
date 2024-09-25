@@ -48,6 +48,9 @@ jobs:
           sudo systemctl start docker
           sudo systemctl enable docker
           
+          sudo systemctl restart docker
+          sudo systemctl start docker
+
           
           echo "Docker Compose is not installed. Installing..."
           sudo apt-get install -y docker-compose
