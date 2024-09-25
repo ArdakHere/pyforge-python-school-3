@@ -32,10 +32,10 @@ jobs:
         port: 22
         script: |
           mkdir -p /home/ubuntu/quantori_project
-          cd /home/ubuntu/quantori_project
+          cd /home/ubuntu/quantori_project/pyforge-python-school-3/
 
           if [ ! -d ".git" ]; then
-            git clone https://github.com/ArdakHere/pyforge-python-school-3 .
+            git clone https://github.com/ArdakHere/pyforge-python-school-3/ .
           fi
 
           git fetch origin
