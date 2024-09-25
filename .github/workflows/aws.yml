@@ -28,7 +28,7 @@ jobs:
       with:
         host: ${{ secrets.EC2_HOST }}          # IP or domain name of your EC2 instance
         username: ${{ secrets.EC2_USER }}      # EC2 user (e.g., 'ubuntu' or 'ec2-user')
-        key: ${{ secrets.SSH_PRIVATE_KEY }}        # Your private SSH key stored in GitHub Secrets
+        key: ${{ secrets.EC2_PRIVATE_KEY }}        # Your private SSH key stored in GitHub Secrets
         port: 22
         script: |
           mkdir -p /home/ubuntu/quantori_project
