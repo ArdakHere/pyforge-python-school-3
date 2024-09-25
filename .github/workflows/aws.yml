@@ -55,4 +55,4 @@ jobs:
           
           # Start Docker and deploy
           sudo docker-compose up
-          docker compose up -d
+          docker compose up d
