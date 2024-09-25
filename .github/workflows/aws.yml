@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3  # Updated to v3
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
@@ -20,15 +20,15 @@ jobs:
         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         aws-region: us-east-2
 
-    - name: Install - SSH Client
+    - name: Install SSH Client
       run: sudo apt-get install -y openssh-client
 
     - name: SSH into EC2 and deploy
-      uses: appleboy/ssh-action@master
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.EC2_HOST }}          # IP or domain name of your EC2 instance
         username: ${{ secrets.EC2_USER }}      # EC2 user (e.g., 'ubuntu' or 'ec2-user')
-        key: ${{ secrets.SSH_KEY }}        # Your private SSH key stored in GitHub Secrets
+        key: ${{ secrets.SSH_KEY }}             # Your private SSH key stored in GitHub Secrets
         port: 22
         script: |
           mkdir -p /home/ubuntu/quantori_project
@@ -36,10 +36,25 @@ jobs:
 
           if [ ! -d ".git" ]; then
             git clone https://github.com/ArdakHere/pyforge-python-school-3 .
-          else
-            git pull origin aws_hw11
           fi
 
+          git fetch origin
           git checkout aws_hw11
+          git pull origin aws_hw11
+
+          if ! command -v docker &> /dev/null; then
+              echo "Docker is not installed. Installing..."
+              sudo apt-get update
+              sudo apt-get install -y docker.io
+              sudo systemctl start docker
+              sudo systemctl enable docker
+          fi
+
+          if ! command -v docker-compose &> /dev/null; then
+              echo "Docker Compose is not installed. Installing..."
+              sudo apt-get install -y docker-compose
+          fi
+
+          # Run the Docker commands
           docker-compose down
           docker-compose up --build -d
