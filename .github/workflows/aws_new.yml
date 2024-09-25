@@ -33,6 +33,8 @@ jobs:
         script: |
           mkdir -p /home/ubuntu/quantori_project
           cd /home/ubuntu/quantori_project              # Navigate to your application directory on EC2
+          git clone https://github.com/ArdakHere/pyforge-python-school-3
           git pull origin aws_hw11            # Pull the latest changes
+          git checkout aws_hw11
           docker-compose down                 # Stop any running containers
           docker-compose up --build -d        # Rebuild and start containers in the background
