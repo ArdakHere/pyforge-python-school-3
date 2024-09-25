@@ -57,4 +57,5 @@ jobs:
 
 #          # Run the Docker commands
 #          docker-compose down
-          docker-compose up --build -d
+          cd /home/ubuntu/quantori_project/pyforge-python-school-3/
+          docker-compose up -d
