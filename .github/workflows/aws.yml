@@ -55,7 +55,8 @@ jobs:
               sudo apt-get install -y docker-compose
           fi
 
-#          # Run the Docker commands
-#          docker-compose down
           cd /quantori_project/pyforge-python-school-3/
           docker-compose up -d
+#          # Run the Docker commands
+#          docker-compose down
+
