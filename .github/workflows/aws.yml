@@ -24,7 +24,7 @@ jobs:
       run: sudo apt-get install -y openssh-client
 
     - name: SSH into EC2 and deploy
-      uses: appleboy/ssh-action@v0.1.3
+      uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.EC2_HOST }}          # IP or domain name of your EC2 instance
         username: ${{ secrets.EC2_USER }}      # EC2 user (e.g., 'ubuntu' or 'ec2-user')
