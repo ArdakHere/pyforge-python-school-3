@@ -32,9 +32,14 @@ jobs:
         port: 22
         script: |
           mkdir -p /home/ubuntu/quantori_project
-          cd /home/ubuntu/quantori_project              
-          git clone https://github.com/ArdakHere/pyforge-python-school-3
-          git pull origin aws_hw11            
+          cd /home/ubuntu/quantori_project
+
+          if [ ! -d ".git" ]; then
+            git clone https://github.com/ArdakHere/pyforge-python-school-3 .
+          else
+            git pull origin aws_hw11
+          fi
+
           git checkout aws_hw11
-          docker-compose down                 
+          docker-compose down
           docker-compose up --build -d
