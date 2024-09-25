@@ -52,7 +52,7 @@ jobs:
           echo "Docker Compose is not installed. Installing..."
           sudo apt-get install -y docker-compose
 
-          docker-compose up --build
+          docker compose up --build
           docker-compose up -d
 #          # Run the Docker commands
 #          docker-compose down
