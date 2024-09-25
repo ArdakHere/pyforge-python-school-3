@@ -51,13 +51,8 @@ jobs:
 
           # Check Docker service status
           sudo systemctl status docker
-
-
-          echo "Docker Compose is not installed. Installing..."
           sudo apt-get install -y docker-compose
           
-
           # Start Docker and deploy
           sudo docker-compose up
           docker compose up -d
-
