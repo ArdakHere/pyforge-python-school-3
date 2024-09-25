@@ -49,12 +49,12 @@ jobs:
               sudo systemctl start docker
               sudo systemctl enable docker
           fi
-          sudo apt-get install -y docker-compose
-#          if ! command -v docker-compose &> /dev/null; then
-#              echo "Docker Compose is not installed. Installing..."
-#              sudo apt-get install -y docker-compose
-#          fi
-#
+
+          if ! command -v docker-compose &> /dev/null; then
+              echo "Docker Compose is not installed. Installing..."
+              sudo apt-get install -y docker-compose
+          fi
+
 #          # Run the Docker commands
 #          docker-compose down
-          docker-compose up -d
+#          docker-compose up --build -d
