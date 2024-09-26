@@ -3,7 +3,7 @@ name: ec2_deploy
 on:
   push:
     branches:
-      - aws_hw11  # Trigger the workflow when changes are pushed to the main branch
+      - aws_hw11
 
 jobs:
   deploy:
@@ -11,7 +11,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3  # Updated to v3
+      uses: actions/checkout@v3
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
@@ -26,9 +26,9 @@ jobs:
     - name: SSH into EC2 and deploy
       uses: appleboy/ssh-action@v1.0.3
       with:
-        host: ${{ secrets.EC2_HOST }}          # IP or domain name of your EC2 instance
-        username: ${{ secrets.EC2_USER }}      # EC2 user (e.g., 'ubuntu' or 'ec2-user')
-        key: ${{ secrets.SSH_KEY }}             # Your private SSH key stored in GitHub Secrets
+        host: ${{ secrets.EC2_HOST }}
+        username: ${{ secrets.EC2_USER }}
+        key: ${{ secrets.SSH_KEY }}
         port: 22
         script: |
           cd quantori_project/pyforge-python-school-3
@@ -40,7 +40,7 @@ jobs:
           git checkout aws_hw11
           git pull origin aws_hw11
 
-          # Install Docker if not already installed
+          # Installing docker
           if ! command -v docker &> /dev/null; then
             echo "Docker is not installed. Installing..."
             sudo apt-get update
@@ -49,7 +49,7 @@ jobs:
             sudo systemctl enable docker
           fi
 
-          # Check Docker service status
+          # Checking docker status
           sudo systemctl status docker
           sudo apt-get install -y docker-compose
           
