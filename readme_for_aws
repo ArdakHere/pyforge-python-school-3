@@ -1,0 +1,10 @@
+- Put all AWS needed credentials into GitHub secrets
+- Configure AWS credentials
+- Configure AWS region
+- Install SSH client
+- SSH into EC2 and deploy the app
+    - get into the directory
+    - git clone the repo
+    - checkout to aws_hw11 branch
+    - install docker and docker-compose
+    - run docker-compose up -d
