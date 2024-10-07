@@ -13,6 +13,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
+    - name: Check for requirements.txt
+      run: |
+          echo "Current directory:"
+          pwd
+          echo "List of files:"
+          ls -al
+
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
       with:
