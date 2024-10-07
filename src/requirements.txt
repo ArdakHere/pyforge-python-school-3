@@ -1,7 +1,6 @@
 annotated-types==0.7.0
 anyio==4.4.0
 certifi==2024.7.4
-charset-normalizer<3.0.0,>=2.0.0  # Ensure this version range is maintained
 chem==1.3.0
 click==8.1.7
 dnspython==2.6.1
