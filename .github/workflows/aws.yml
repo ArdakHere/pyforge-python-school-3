@@ -1,4 +1,4 @@
-name: airflow_hw
+name: ec2_setup
 
 on:
   push:
