@@ -3,7 +3,7 @@ name: ec2_deploy
 on:
   push:
     branches:
-      - aws_hw11
+      - airflow_hw
 
 jobs:
   deploy:
