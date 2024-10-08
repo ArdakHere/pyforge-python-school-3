@@ -30,6 +30,8 @@ jobs:
     - name: Install SSH Client
       run: sudo apt-get install -y openssh-client
 
+      # SSH into EC2 and deploy
+    - name: SSH into EC2 and deploy
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.EC2_HOST }}
@@ -45,8 +47,10 @@ jobs:
           git fetch origin
           git checkout aws_hw11
           git pull origin aws_hw11
-
-          # Install Docker 
+          
+          echo "Contents of requirements.txt after checkout:"
+          cat requirements.txt
+          
           sudo apt-get update
           sudo apt-get install -y \
               ca-certificates \
@@ -75,3 +79,7 @@ jobs:
 
           # Start the updated containers
           sudo docker-compose up -d
+    
+
+    - name: print requirements.txt contents
+      run: cat quantori_project/pyforge-python-school-3/requirements.txt
