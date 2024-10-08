@@ -45,8 +45,8 @@ jobs:
           fi
 
           git fetch origin
-          git checkout aws_hw11
-          git pull origin aws_hw11
+          git checkout airflow_hw
+          git pull origin airflow_hw
           
           echo "Contents of requirements.txt checkout:"
           cat requirements.txt
