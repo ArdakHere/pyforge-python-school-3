@@ -48,7 +48,7 @@ jobs:
           git checkout aws_hw11
           git pull origin aws_hw11
           
-          echo "Contents of requirements.txt after checkout:"
+          echo "Contents of requirements.txt checkout:"
           cat requirements.txt
           
           sudo apt-get update
