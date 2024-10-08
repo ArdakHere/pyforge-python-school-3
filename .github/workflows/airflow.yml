@@ -75,8 +75,3 @@ jobs:
 
           # Start the updated containers
           sudo docker-compose up -d
-    
-    
-
-    - name: print requirements.txt contents
-      run: cat quantori_project/pyforge-python-school-3/requirements.txt
