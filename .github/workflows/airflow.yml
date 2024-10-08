@@ -15,10 +15,10 @@ jobs:
 
     - name: Check for requirements.txt
       run: |
-          echo "Current directory:"
-          pwd
-          echo "List of files: -"
-          ls -al
+        echo "Current directory:"
+        pwd
+        echo "List of files:"
+        ls -al
 
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v2
@@ -47,7 +47,7 @@ jobs:
           git checkout aws_hw11
           git pull origin aws_hw11
 
-          # Installing Docker
+          # Install Docker
           sudo apt-get update
           sudo apt-get install -y \
               ca-certificates \
@@ -64,7 +64,7 @@ jobs:
           # Install Docker Compose
           sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
-
+          
           # Start Docker
           sudo systemctl start docker
           sudo systemctl enable docker
@@ -73,6 +73,11 @@ jobs:
           docker --version
           docker-compose --version
 
+          # Ensure workflow uses latest dependencies
+          docker-compose build --no-cache
+
           # Start Docker and deploy
           sudo docker-compose up -d
-        
+
+    - name: Print requirements.txt contents
+      run: cat quantori_project/pyforge-python-school-3/requirements.txt
