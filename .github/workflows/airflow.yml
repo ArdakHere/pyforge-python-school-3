@@ -30,6 +30,7 @@ jobs:
     - name: Install SSH Client
       run: sudo apt-get install -y openssh-client
 
+      # SSH into EC2 and deploy
     - name: SSH into EC2 and deploy
       uses: appleboy/ssh-action@v1.0.3
       with:
@@ -47,7 +48,7 @@ jobs:
           git checkout aws_hw11
           git pull origin aws_hw11
 
-          # Install Docker
+          # Install Docker if not already installed
           sudo apt-get update
           sudo apt-get install -y \
               ca-certificates \
@@ -64,20 +65,19 @@ jobs:
           # Install Docker Compose
           sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
           sudo chmod +x /usr/local/bin/docker-compose
-          
-          # Start Docker
           sudo systemctl start docker
           sudo systemctl enable docker
 
-          # Verify installation
-          docker --version
-          docker-compose --version
+          # Ensure old containers and images are removed
+          sudo docker-compose down
+          sudo docker system prune -af --volumes  # This will remove all old images, containers, volumes
 
-          # Ensure workflow uses latest dependencies
-          docker-compose build --no-cache
+          # Build Docker containers without cache
+          sudo docker-compose build --no-cache
 
-          # Start Docker and deploy
+          # Start the updated containers
           sudo docker-compose up -d
+    
 
     - name: print requirements.txt contents
       run: cat quantori_project/pyforge-python-school-3/requirements.txt
