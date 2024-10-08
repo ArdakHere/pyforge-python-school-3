@@ -46,7 +46,7 @@ jobs:
           git checkout aws_hw11
           git pull origin aws_hw11
 
-          # Install Docker if not already installed
+          # Install Docker 
           sudo apt-get update
           sudo apt-get install -y \
               ca-certificates \
