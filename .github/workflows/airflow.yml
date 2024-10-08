@@ -79,5 +79,5 @@ jobs:
           # Start Docker and deploy
           sudo docker-compose up -d
 
-    - name: Print requirements.txt contents
+    - name: print requirements.txt contents
       run: cat quantori_project/pyforge-python-school-3/requirements.txt
