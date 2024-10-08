@@ -12,7 +12,11 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v3
-
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
     - name: Check for requirements.txt
       run: |
         echo "Current directory:"
