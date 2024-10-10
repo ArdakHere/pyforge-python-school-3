@@ -32,7 +32,7 @@ def extract_and_load():
     SMILES molecules, data of creation are pulled from database
     """
     try:
-        db_url = 'postgresql+psycopg2://admin:password@ec2-18-118-193-140.us-east-2.compute.amazonaws.com:5433/molecule_db'
+        db_url = 'postgresql+psycopg2://admin:password@eec2-3-129-21-162.us-east-2.compute.amazonaws.com:5433/molecule_db'
         engine = create_engine(db_url)
         Session = sessionmaker(bind=engine)
         session = Session()
