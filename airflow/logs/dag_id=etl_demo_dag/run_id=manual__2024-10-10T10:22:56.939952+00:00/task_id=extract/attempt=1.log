@@ -1,0 +1,16 @@
+[2024-10-10T10:22:57.984+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: etl_demo_dag.extract manual__2024-10-10T10:22:56.939952+00:00 [queued]>
+[2024-10-10T10:22:57.991+0000] {taskinstance.py:1956} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: etl_demo_dag.extract manual__2024-10-10T10:22:56.939952+00:00 [queued]>
+[2024-10-10T10:22:57.991+0000] {taskinstance.py:2170} INFO - Starting attempt 1 of 1
+[2024-10-10T10:22:58.001+0000] {taskinstance.py:2191} INFO - Executing <Task(PythonOperator): extract> on 2024-10-10 10:22:56.939952+00:00
+[2024-10-10T10:22:58.006+0000] {standard_task_runner.py:60} INFO - Started process 756 to run task
+[2024-10-10T10:22:58.009+0000] {standard_task_runner.py:87} INFO - Running: ['***', 'tasks', 'run', 'etl_demo_dag', 'extract', 'manual__2024-10-10T10:22:56.939952+00:00', '--job-id', '49', '--raw', '--subdir', 'DAGS_FOLDER/etl_dag.py', '--cfg-path', '/tmp/tmptw4xj1hs']
+[2024-10-10T10:22:58.013+0000] {standard_task_runner.py:88} INFO - Job 49: Subtask extract
+[2024-10-10T10:22:58.061+0000] {task_command.py:423} INFO - Running <TaskInstance: etl_demo_dag.extract manual__2024-10-10T10:22:56.939952+00:00 [running]> on host d9c07f23d68a
+[2024-10-10T10:22:58.114+0000] {taskinstance.py:2480} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='etl_demo_dag' AIRFLOW_CTX_TASK_ID='extract' AIRFLOW_CTX_EXECUTION_DATE='2024-10-10T10:22:56.939952+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2024-10-10T10:22:56.939952+00:00'
+[2024-10-10T10:22:58.200+0000] {logging_mixin.py:188} INFO - Error: (psycopg2.OperationalError) could not translate host name "eec2-3-129-21-162.us-east-2.compute.amazonaws.com" to address: Name or service not known
+
+(Background on this error at: https://sqlalche.me/e/14/e3q8)
+[2024-10-10T10:22:58.200+0000] {python.py:201} INFO - Done. Returned value was: None
+[2024-10-10T10:22:58.206+0000] {taskinstance.py:1138} INFO - Marking task as SUCCESS. dag_id=etl_demo_dag, task_id=extract, execution_date=20241010T102256, start_date=20241010T102257, end_date=20241010T102258
+[2024-10-10T10:22:58.232+0000] {local_task_job_runner.py:234} INFO - Task exited with return code 0
+[2024-10-10T10:22:58.246+0000] {taskinstance.py:3280} INFO - 1 downstream tasks scheduled from follow-on schedule check

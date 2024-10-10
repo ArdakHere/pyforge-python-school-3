@@ -1,6 +1,7 @@
 import io
 import os
 import secrets
+from dotenv import load_dotenv
 
 import boto3
 import pandas as pd
@@ -14,16 +15,11 @@ from sqlalchemy.dialects.postgresql import psycopg2
 from sqlalchemy.engine import cursor
 from sqlalchemy.orm import sessionmaker
 
+load_dotenv()
 
-print("AWS_ACCESS_KEY_ID:", os.getenv('AWS_ACCESS_KEY_ID'))
-print("AWS_SECRET_ACCESS_KEY:", os.getenv('AWS_SECRET_ACCESS_KEY'))
-print("AWS_DEFAULT_REGION:", os.getenv('AWS_DEFAULT_REGION'))
-
-# access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
-# secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
-# aws_region = os.getenv('AWS_DEFAULT_REGION')
-
-
+access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
+secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+aws_region = os.getenv('AWS_DEFAULT_REGION')
 
 def extract_and_load():
     """
@@ -32,7 +28,7 @@ def extract_and_load():
     SMILES molecules, data of creation are pulled from database
     """
     try:
-        db_url = 'postgresql+psycopg2://admin:password@eec2-3-129-21-162.us-east-2.compute.amazonaws.com:5433/molecule_db'
+        db_url = 'postgresql+psycopg2://admin:password@ec2-3-129-21-162.us-east-2.compute.amazonaws.com:5433/molecule_db'
         engine = create_engine(db_url)
         Session = sessionmaker(bind=engine)
         session = Session()
@@ -44,17 +40,26 @@ def extract_and_load():
         print(rows)
 
         df = pd.DataFrame(rows, columns=['smiles', 'created_at'])
-        csv_buffer = io.StringIO()
-        df.to_csv(csv_buffer, index=False)
+        raw_csv_path = '/tmp/raw_molecules.csv'
+        df.to_csv(raw_csv_path, index=False)
 
-        s3_client = boto3.client('s3')
+        print(f"ONLY FOR DEBUGGING {secret_access_key}")
+        s3_client = boto3.client(
+            's3',
+            aws_access_key_id=access_key_id,
+            aws_secret_access_key=secret_access_key,
+            region_name=aws_region
+        )
 
         s3_bucket_name = 'molecules-raw'
-        s3_key = 'raw_data/raw_data.csv'
+        s3_key = 'raw/raw_molecules.csv'
 
-        s3_client.put_object(Bucket=s3_bucket_name, Key=s3_key, Body=csv_buffer.getvalue())
+        s3_client.upload_file(raw_csv_path, 'molecules-raw', 'raw/raw_molecules.csv')
 
-        return f"s3://{s3_bucket_name}/{s3_key}"
+        s3_url = f'https://{s3_bucket_name}.s3.amazonaws.com/{s3_key}'
+
+        return s3_url
+
     except Exception as e:
             print(f"Error: {e}")
     finally:
