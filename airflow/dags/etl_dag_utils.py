@@ -17,7 +17,7 @@ from sqlalchemy.dialects.postgresql import psycopg2
 from sqlalchemy.engine import cursor
 from sqlalchemy.orm import sessionmaker
 
-load_dotenv()
+load_dotenv('.env_dag')
 
 access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')

@@ -10,7 +10,7 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-load_dotenv()
+load_dotenv('.env_dag')
 
 aws_host_ip = os.getenv('AWS_HOST_IP')
 

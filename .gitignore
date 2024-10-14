@@ -1,4 +1,5 @@
 .env
+.env_dag
 .pytest_cache
 .idea
 __pycache__
