@@ -1,0 +1,50 @@
+[
+    {
+        "name": "methane",
+        "smiles": "C"
+    },
+    {
+        "name": "ethane",
+        "smiles": "CC"
+    },
+    {
+        "name": "propane",
+        "smiles": "CCC"
+    },
+    {
+        "name": "butane",
+        "smiles": "CCCC"
+    },
+    {
+        "name": "pentane",
+        "smiles": "CCCCC"
+    },
+    {
+        "name": "hexane",
+        "smiles": "CCCCCC"
+    },
+    {
+        "name": "benzene",
+        "smiles": "C1=CC=CC=C1"
+    },
+    {
+        "name": "ethanol",
+        "smiles": "CCO"
+    },
+    {
+        "name": "acetone",
+        "smiles": "CC(=O)C"
+    },
+    {
+        "name": "acetylene",
+        "smiles": "C#C"
+    },
+    {
+        "name": "formaldehyde",
+        "smiles": "C=O"
+    },
+    {
+		"name": "methanol",
+		"smiles": "CO"
+	}
+]

@@ -48,7 +48,7 @@ ethanol = Chem.MolFromSmiles("CCO")
 
 # Perform the substructure search
 match = ethanol.HasSubstructMatch(benzene)
-print("Benzene ring found in ethanol:", match)
+print("Benzene ring found in ethanol.json:", match)
 ```
 
 ### 4. Molecular Visualization

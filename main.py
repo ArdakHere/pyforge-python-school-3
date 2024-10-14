@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 from os import getenv
 
 import redis
@@ -10,6 +11,8 @@ from fastapi.responses import JSONResponse
 
 # from src.molecules.models import Molecule
 from src.molecules.router import router
+
+
 
 app = FastAPI()
 

@@ -28,7 +28,7 @@ async def create_substructure_task(mol_substructure: str):
 @router.get("/tasks/{task_id}")
 async def get_task_result(task_id: str):
     task_result = AsyncResult(task_id, app=celery)
-    logging.info("Checking task status")
+    logging.info("Checking task  status")
     if task_result.state == 'PENDING':
         return {"task_id": task_id, "status": "Task is still processing"}
     elif task_result.state == 'SUCCESS':
