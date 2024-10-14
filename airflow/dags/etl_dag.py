@@ -22,8 +22,7 @@ from etl_dag_utils import *
 
 with DAG(
     dag_id='etl_dag',
-    start_date=pendulum.datetime(2024, 10, 14, 20, 0, 0),
-    schedule_interval='0 20 * * *',  # run daily at 3 PM
+    start_date=pendulum.today(),
     tags=['python_school']
 ) as dag:
     start_op = EmptyOperator(

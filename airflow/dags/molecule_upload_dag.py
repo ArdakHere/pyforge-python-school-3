@@ -49,8 +49,9 @@ def load_molecules():
 
 with DAG(
     dag_id='molecule_load_dag',
-    start_date=pendulum.datetime(2024, 10, 14, 15, 0, 0),
-    schedule_interval='0 15 * * *',  # run daily at 3 PM
+    start_date=pendulum.today(),
+    # start_date=pendulum.datetime(2024, 10, 14, 15, 0, 0),
+    # schedule_interval='0 15 * * *',  # run daily at 3 PM
     tags=['python_school']
 ) as dag:
     start_op = EmptyOperator(
