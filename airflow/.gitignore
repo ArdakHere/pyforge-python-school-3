@@ -1,3 +1,2 @@
 .env_dag
 .env
-airflow/logs/
