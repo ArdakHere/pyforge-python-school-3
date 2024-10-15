@@ -1,6 +1,8 @@
 import io
+import json
 import os
 from datetime import datetime
+import random
 
 import pandas as pd
 from dotenv import load_dotenv
@@ -23,6 +25,39 @@ access_key_id = os.getenv('AWS_ACCESS_KEY_ID')
 secret_access_key = os.getenv('AWS_SECRET_ACCESS_KEY')
 aws_region = os.getenv('AWS_REGION')
 aws_host_ip = os.getenv('AWS_HOST_IP')
+
+
+def load_molecules():
+    """
+    Load molecules from a JSON file and insert into the database of the FastAPI app
+    """
+    try:
+        db_url = f'postgresql+psycopg2://admin:password@{aws_host_ip}:5433/molecule_db'
+        engine = create_engine(db_url)
+        Session = sessionmaker(bind=engine)
+        session = Session()
+
+        json_path = '/opt/airflow/airflow_data/mol_list.json'
+
+        with open(json_path, 'r') as f:
+            molecules = json.load(f)
+
+        selected_molecule = random.choice(molecules)
+        print('Selected molecule:', selected_molecule)
+
+        query = """
+                INSERT INTO molecules (name, smiles) 
+                VALUES (:name, :smiles)
+            """
+
+        session.execute(query, {"name": selected_molecule["name"], "smiles": selected_molecule["smiles"]})
+        session.commit()
+
+        print(f"Inserted molecule: {selected_molecule['name']} with SMILES: {selected_molecule['smiles']}")
+    except Exception as e:
+        print(f"Error: {e}")
+    finally:
+        session.close()
 
 
 def extract_and_load(ti):
@@ -96,15 +131,13 @@ def transform_and_load(ti):
     date = ti.xcom_pull(key='today_date', task_ids='extract')
 
     if s3_url:
-        print(f"S3 URL pulled from XCom: {s3_url}")
-        print("Type of s3_url:", type(s3_url))
 
         df = read_csv_from_s3_url(s3_url, access_key_id, secret_access_key, aws_region)
 
         processed_df = compute_mol_props(df)
 
         if df is not None:
-            print(df.head())  # Display the first few rows of the DataFrame
+            print(df.head())
         else:
             print("Failed to load DataFrame from S3.")
 

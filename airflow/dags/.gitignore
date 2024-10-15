@@ -1,3 +1,4 @@
 .env_dag
 .env
 airflow/logs/
+.DS_Store

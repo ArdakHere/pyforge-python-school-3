@@ -17,12 +17,13 @@ from sqlalchemy.dialects.postgresql import psycopg2
 from sqlalchemy.engine import cursor
 from sqlalchemy.orm import sessionmaker
 
-from etl_dag_utils import *
+from etl_dag_utils import extract_and_load, transform_and_load
 
 
 with DAG(
     dag_id='etl_dag',
-    start_date=pendulum.today(),
+    start_date=pendulum.datetime(2024, 10, 16, 20, 0, 0),
+    schedule_interval='0 20 * * *', # run daily at 8pm
     tags=['python_school']
 ) as dag:
     start_op = EmptyOperator(
